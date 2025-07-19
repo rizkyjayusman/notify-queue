@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Realtime Notification Client</title>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    #log {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f5f5f5;
+      border: 1px solid #ccc;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📡 Notification Client</h1>
+
+  <label for="userId">User ID:</label>
+  <input type="text" id="userId" value="123" />
+  <button onclick="connect()">Connect</button>
+
+  <div id="log"><strong>Status:</strong> Not connected</div>
+
+  <script>
+    let socket;
+
+    function connect() {
+      const userId = document.getElementById('userId').value;
+      document.getElementById('log').innerHTML = `<strong>Status:</strong> Connecting as <code>${userId}</code>...`;
+
+      socket = io('http://localhost:4000', {
+        query: { userId }
+      });
+
+      socket.on('connect', () => {
+        log(`✅ Connected as <strong>${userId}</strong>`);
+      });
+
+      socket.on('notification', (msg) => {
+        log(`🔔 Notification: <strong>${msg}</strong>`);
+      });
+
+      socket.on('disconnect', () => {
+        log('❌ Disconnected');
+      });
+    }
+
+    function log(message) {
+      const el = document.getElementById('log');
+      el.innerHTML += `<div>${message}</div>`;
+    }
+  </script>
+</body>
+</html>
