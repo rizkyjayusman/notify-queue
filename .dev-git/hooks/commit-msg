@@ -1,0 +1,14 @@
+#!/bin/bash
+
+COMMIT_MSG=$(cat "$1")
+
+PATTERN="^(feat|fix|refactor|chore)(\([a-zA-Z0-9\-]+\))?: .+"
+
+if [[ ! "$COMMIT_MSG" =~ $PATTERN ]]; then
+  echo "ERROR: Invalid commit message format."
+  echo "Commit message must match the format: <type>(<scope>): <commit message>"
+  echo "Allowed types: feat, fix, refactor, chore"
+  exit 1
+fi
+
+exit 0
